@@ -9,8 +9,15 @@ $stmt->execute();
 // Obtener resultados como un array asociativo
 $resultados = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-
-
 // Devolver los resultados en formato JSON
 echo json_encode(["data" => $resultados]);
 ?>
+
+
+
+
+
+
+
+
+
