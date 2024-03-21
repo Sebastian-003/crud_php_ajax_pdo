@@ -66,23 +66,23 @@
                     </div>
                     <div class="modal-body">
                         <!-- Formulario de Edición -->
-                        <form id="editForm" method="POST" id="formulario" enctype="multipart/form-data" action="editar.php">
-                            <input type="hidden" id="editUserId">
+                        <form id="editForm" method="POST" id="formulario" enctype="multipart/form-data">
+                            <input type="hidden" id="editUserId" name="editUserId">
                             <div class="mb-3">
                                 <label for="editNombre" class="form-label">Nombre</label>
-                                <input type="text" class="form-control" id="editNombre">
+                                <input type="text" class="form-control" id="editNombre" name="editNombre">
                             </div>
                             <div class="mb-3">
                                 <label for="editApellidos" class="form-label">Apellidos</label>
-                                <input type="text" class="form-control" id="editApellidos">
+                                <input type="text" class="form-control" id="editApellidos" name="editApellidos">
                             </div>
                             <div class="mb-3">
                                 <label for="editTelefono" class="form-label">Teléfono</label>
-                                <input type="text" class="form-control" id="editTelefono">
+                                <input type="text" class="form-control" id="editTelefono" name="editTelefono">
                             </div>
                             <div class="mb-3">
                                 <label for="editEmail" class="form-label">Email</label>
-                                <input type="email" class="form-control" id="editEmail">
+                                <input type="email" class="form-control" id="editEmail" name="editEmail">
                             </div>
                             <!-- Puedes añadir más campos aquí si es necesario -->
                             <button type="submit" class="btn btn-primary" id="btnGuardar">Guardar cambios</button>
@@ -153,6 +153,7 @@
         <script src="//cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
 
         <script type="text/javascript">
+            let id = 0
             $(document).ready(function() {
                 let alertaMostrada = false;
                 $('#datos_usuario').DataTable({
@@ -163,7 +164,9 @@
                         "type": "POST"
                     },
                     "columns": [{
-                            "data": "id"
+                            "render": function(data, type, full, meta) {
+                                return meta.row + 1; // Esto asigna el número de fila como ID
+                            }
                         },
                         {
                             "data": "nombre"
@@ -266,8 +269,6 @@
                             $('#editEmail').val(usuario.email);
                             // Mostrar el modal de edición
                             $('#editModal').modal('show');
-
-                            console.log(usuario);
                         } else {
                             alert('No se encontraron datos para el usuario con el ID proporcionado.');
                         }
@@ -281,17 +282,37 @@
 
             // Agregar evento de clic para el botón de editar
             $(document).on('click', '.btn-editar', function() {
-                var id = $(this).data('id');
+                let id = $(this).data('id');
                 openEditForm(id);
             });
 
-            // Manejar el evento submit del formulario de edición
             $('#editForm').on('submit', function(event) {
                 event.preventDefault(); // Prevenir el comportamiento por defecto del formulario
-                // Aquí no necesitas hacer nada más, ya que la lógica de guardar los cambios se maneja en el evento submit
-               
-                console.log($(this).serialize());
 
+                // Obtener los datos del formulario de edición
+                let formData = $(this).serialize();
+
+                // Enviar los datos al servidor
+                $.ajax({
+                    url: 'editar.php',
+                    method: 'POST',
+                    data: formData,
+                    success: function(response) {
+                        let data = JSON.parse(response);
+                        if (data.success) {
+                            // Si la edición fue exitosa, cerrar el modal de edición y recargar la página
+                            $('#editModal').modal('hide');
+                            location.reload();
+                        } else {
+                            // Si hubo un error, mostrar un mensaje de error
+                            alert('Error al editar el usuario. Por favor, inténtalo de nuevo.');
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error(xhr.responseText);
+                        alert('Error al editar el usuario. Por favor, revisa la consola para más detalles.');
+                    }
+                });
             });
         </script>
 

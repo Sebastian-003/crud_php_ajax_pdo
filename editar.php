@@ -1,15 +1,14 @@
 <?php
 include('conexion.php');
 
-
 // Verificar si se recibieron datos del formulario de edición
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Obtener los datos del formulario
-    $id = $_POST['id'];
-    $nombre = $_POST['nombre'];
-    $apellidos = $_POST['apellidos'];
-    $telefono = $_POST['telefono'];
-    $email = $_POST['email'];
+    $id = $_POST['editUserId'];
+    $nombre = $_POST['editNombre'];
+    $apellidos = $_POST['editApellidos'];
+    $telefono = $_POST['editTelefono'];
+    $email = $_POST['editEmail'];
 
     // Preparar y ejecutar la consulta para actualizar los datos del usuario
     $consulta = "UPDATE usuarios SET nombre = :nombre, apellidos = :apellidos, telefono = :telefono, email = :email WHERE id = :id";

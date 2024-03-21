@@ -23,7 +23,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     // Preparar la consulta SQL
-    $sql = "INSERT INTO usuarios (nombre, apellidos, imagen, telefono, email) VALUES (:nombre, :apellidos, :imagen, :telefono, :email)";
+    $sql = "INSERT INTO usuarios (nombre, apellidos, imagen, telefono, email,fecha_creacion) VALUES (:nombre, :apellidos, :imagen, :telefono, :email, NOW())";
     $stmt = $conexion->prepare($sql);
 
     // Vincular parámetros
